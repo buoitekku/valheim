@@ -3,8 +3,33 @@ resource "openstack_compute_keypair_v2" "valheim_key" {
   public_key = file(var.ssh_public_key_path)
 }
 
+resource "openstack_networking_secgroup_v2" "valheim_sg" {
+  name        = "valheim-sg"
+  description = "Security group dla serwera Valheim"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "valheim_udp" {
+  security_group_id = openstack_networking_secgroup_v2.valheim_sg.id
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "udp"
+  port_range_min    = 2456
+  port_range_max    = 2458
+  remote_ip_prefix  = "0.0.0.0/0"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "ssh" {
+  security_group_id = openstack_networking_secgroup_v2.valheim_sg.id
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 22
+  port_range_max    = 22
+  remote_ip_prefix  = var.ssh_allowed_cidr
+}
+
 resource "openstack_compute_instance_v2" "valheim_server" {
-  name        = var.valheim_server_name
+  name        = "valheim-server"
   flavor_name = var.instance_flavor
   image_name  = var.instance_image
   region      = var.instance_region
@@ -22,8 +47,10 @@ resource "openstack_compute_instance_v2" "valheim_server" {
     valheim_password    = var.valheim_password
   })
 
-  create_timeout = "30m"
-  delete_timeout = "30m"
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {
@@ -31,6 +58,6 @@ resource "openstack_networking_floatingip_v2" "fip" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_assoc" {
-  server_id   = openstack_compute_instance_v2.valheim_server.id
-  floating_ip = openstack_networking_floatingip_v2.fip.address
+  instance_id    = openstack_compute_instance_v2.valheim_server.id
+  floating_ip_id = openstack_networking_floatingip_v2.fip.id
 }
