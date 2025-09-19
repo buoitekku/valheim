@@ -10,8 +10,8 @@ resource "openstack_networking_subnet_v2" "valheim_subnet" {
 }
 
 resource "openstack_networking_router_v2" "valheim_router" {
-  name = "valheim-router"
-  external_network_id = var.external_network_name
+  name                 = "valheim-router"
+  external_network_id  = var.external_network_name
 }
 
 resource "openstack_networking_router_interface_v2" "router_iface" {
