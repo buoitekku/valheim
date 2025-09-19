@@ -1,0 +1,98 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - curl
+  - wget
+  - unzip
+  - screen
+  - htop
+  - ufw
+  - fail2ban
+
+users:
+  - name: valheim
+    system: true
+    shell: /bin/bash
+    home: /opt/valheim
+    create_home: true
+
+write_files:
+  - path: /opt/valheim/install_valheim.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      set -e
+      
+      echo "=== Instalacja serwera Valheim ==="
+      
+      # Tworzenie użytkownika steam
+      useradd -m steam || true
+      
+      # Instalacja SteamCMD
+      cd /home/steam
+      wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+      tar -xvzf steamcmd_linux.tar.gz
+      chown -R steam:steam /home/steam
+      
+      # Instalacja Valheim Server
+      sudo -u steam ./steamcmd.sh +force_install_dir /home/steam/valheim +login anonymous +app_update 896660 validate +exit
+      
+      # Tworzenie skryptu startowego
+      cat > /home/steam/valheim/start_server.sh << 'EOF'
+      #!/bin/bash
+      export templdpath=$LD_LIBRARY_PATH
+      export LD_LIBRARY_PATH=./linux64:$LD_LIBRARY_PATH
+      export SteamAppId=892970
+      
+      ./valheim_server.x86_64 -name "${valheim_server_name}" -port 2456 -world "${valheim_world_name}" -password "${valheim_password}" -public 1
+      export LD_LIBRARY_PATH=$templdpath
+      EOF
+      
+      chmod +x /home/steam/valheim/start_server.sh
+      chown -R steam:steam /home/steam/valheim
+      
+      echo "=== Konfiguracja firewall ==="
+      ufw allow 2456:2458/udp
+      ufw allow 22/tcp
+      ufw --force enable
+      
+      echo "=== Tworzenie usługi systemd ==="
+      cat > /etc/systemd/system/valheim.service << 'EOF'
+      [Unit]
+      Description=Valheim Server
+      After=network.target
+      
+      [Service]
+      Type=simple
+      User=steam
+      WorkingDirectory=/home/steam/valheim
+      ExecStart=/home/steam/valheim/start_server.sh
+      Restart=always
+      RestartSec=10
+      
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+      
+      systemctl daemon-reload
+      systemctl enable valheim
+      
+      echo "=== Instalacja zakończona ==="
+
+runcmd:
+  - /opt/valheim/install_valheim.sh
+  - systemctl start valheim
+  - echo "Serwer Valheim został uruchomiony!"
+
+final_message: |
+  Serwer Valheim został pomyślnie zainstalowany i uruchomiony!
+  
+  Szczegóły połączenia:
+  - Nazwa serwera: ${valheim_server_name}
+  - Świat: ${valheim_world_name}
+  - Port: 2456
+  
+  Aby sprawdzić status serwera: systemctl status valheim
+  Aby zobaczyć logi: journalctl -u valheim -f
