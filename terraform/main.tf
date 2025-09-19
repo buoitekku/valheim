@@ -3,7 +3,7 @@ terraform {
   required_providers {
     ovh = {
       source  = "ovh/ovh"
-      version = "~> 0.45"
+      version = "~> 0.50"
     }
   }
 }
@@ -25,7 +25,7 @@ resource "ovh_cloud_project_instance" "valheim_server" {
   region       = var.instance_region
   
   # Klucz SSH
-  ssh_keys_ids = [ovh_cloud_project_ssh_key.valheim_key.id]
+  ssh_keys_ids = [ovh_me_ssh_key.valheim_key.id]
   
   # Skrypt inicjalizacyjny
   user_data = base64encode(templatefile("${path.module}/../scripts/cloud-init.yml", {
@@ -36,10 +36,9 @@ resource "ovh_cloud_project_instance" "valheim_server" {
 }
 
 # Klucz SSH
-resource "ovh_cloud_project_ssh_key" "valheim_key" {
-  service_name = var.ovh_service_name
-  name         = "valheim-server-key"
-  public_key   = file(var.ssh_public_key_path)
+resource "ovh_me_ssh_key" "valheim_key" {
+  key_name = "valheim-server-key"
+  key      = file(var.ssh_public_key_path)
 }
 
 # Note: Valheim ports (2456-2458 UDP) should be opened via OVH control panel or cloud-init script
