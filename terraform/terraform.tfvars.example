@@ -1,16 +1,20 @@
-# Skopiuj ten plik do terraform.tfvars i wypełnij swoimi danymi
+os_auth_url            = "https://auth.cloud.ovh.net/v3"
+os_username            = "twoj_user"
+os_password            = "twoje_haslo"
+os_user_domain_name    = "Default"
+os_project_name        = "project-xxxxxx"
+os_project_domain_name = "Default"
 
-# Dane OVHCloud API (uzyskaj z: https://eu.api.ovh.com/createToken/)
-ovh_application_key    = "your_application_key_here"
-ovh_application_secret = "your_application_secret_here"
-ovh_consumer_key      = "your_consumer_key_here"
-ovh_service_name      = "your_project_id_here"
+instance_region    = "GRA11"
+instance_flavor    = "D2-4"
+instance_image     = "Ubuntu 22.04 LTS"
+network_name       = "private_network_name_here"
+external_network_name = "external_network_name_here"
 
-# Konfiguracja serwera Valheim
-valheim_server_name = "Mój Serwer Valheim"
-valheim_world_name  = "MojSwiat"
-valheim_password    = "twoje_bezpieczne_haslo"
+ssh_public_key_path  = "~/.ssh/id_rsa.pub"
+ssh_private_key_path = "~/.ssh/id_rsa"
 
-# Opcjonalne - dostosuj jeśli potrzebujesz
-# instance_flavor = "s1-4"  # Większa instancja dla więcej graczy
-# instance_region = "WAW1"  # Warszawa dla lepszego pingu
+valheim_server_name = "Wojtek-Valheim"
+valheim_world_name  = "PolskaPrzygoda"
+valheim_password    = "SuperTajneHaslo123"
+ssh_allowed_cidr    = "0.0.0.0/0"
