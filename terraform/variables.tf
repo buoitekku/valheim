@@ -1,76 +1,71 @@
-# Zmienne OVHCloud
+# === Provider & OVH API ===
 variable "ovh_endpoint" {
-  description = "Endpoint API OVHCloud"
+  description = "Endpoint OVH API (np. ovh-eu)"
   type        = string
   default     = "ovh-eu"
 }
 
 variable "ovh_application_key" {
-  description = "Klucz aplikacji OVHCloud"
+  description = "Application Key wygenerowany w OVH API"
   type        = string
   sensitive   = true
 }
 
 variable "ovh_application_secret" {
-  description = "Sekret aplikacji OVHCloud"
+  description = "Application Secret wygenerowany w OVH API"
   type        = string
   sensitive   = true
 }
 
 variable "ovh_consumer_key" {
-  description = "Klucz konsumenta OVHCloud"
+  description = "Consumer Key wygenerowany w OVH API"
   type        = string
   sensitive   = true
 }
 
 variable "ovh_service_name" {
-  description = "Nazwa projektu OVHCloud"
+  description = "Nazwa projektu OVH Cloud (service_name)"
   type        = string
 }
 
-# Zmienne instancji
+# === Parametry instancji ===
 variable "instance_flavor" {
-  description = "Typ instancji VPS"
+  description = "Typ maszyny (np. s1-2, b2-7, c2-15 itp.)"
   type        = string
-  default     = "s1-2"  # 1 vCPU, 2GB RAM - wystarczające dla małego serwera Valheim
 }
 
 variable "instance_image" {
-  description = "Obraz systemu operacyjnego"
+  description = "Obraz systemu (np. Ubuntu 22.04)"
   type        = string
-  default     = "Ubuntu 22.04"
 }
 
 variable "instance_region" {
-  description = "Region datacenter"
+  description = "Region OVH (np. GRA11, BHS5, WAW1)"
   type        = string
-  default     = "GRA11"  # Gravelines, Francja - dobra lokalizacja dla Polski
 }
 
-# Zmienne SSH
+# === SSH ===
 variable "ssh_public_key_path" {
-  description = "Ścieżka do publicznego klucza SSH"
+  description = "Ścieżka do publicznego klucza SSH (np. ~/.ssh/id_rsa.pub)"
   type        = string
-  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "ssh_private_key_path" {
-  description = "Ścieżka do prywatnego klucza SSH"
+  description = "Ścieżka do prywatnego klucza SSH (np. ~/.ssh/id_rsa)"
   type        = string
-  default     = "~/.ssh/id_rsa"
 }
 
-# Zmienne serwera Valheim
+# === Parametry serwera Valheim ===
 variable "valheim_server_name" {
-  description = "Nazwa serwera Valheim"
+  description = "Nazwa serwera Valheim (wyświetlana w grze)"
   type        = string
-  default     = "Mój Serwer Valheim"
+  default     = "Valheim Server"
 }
 
 variable "valheim_world_name" {
   description = "Nazwa świata Valheim"
   type        = string
-  default     = "MojSwiat"
+  default     = "DedicatedWorld"
 }
 
 variable "valheim_password" {
