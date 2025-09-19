@@ -17,7 +17,7 @@ provider "ovh" {
 }
 
 # Tworzenie VPS
-resource "ovh_cloud_project_instance" "valheim_server" {
+resource "ovh_cloud_project_compute_instance" "valheim_server" {
   service_name = var.ovh_service_name
   name         = "valheim-server"
   flavor_name  = var.instance_flavor
@@ -25,7 +25,7 @@ resource "ovh_cloud_project_instance" "valheim_server" {
   region       = var.instance_region
   
   # Klucz SSH
-  ssh_key_name = ovh_cloud_project_sshkey.valheim_key.name
+  ssh_keys_ids = [ovh_me_ssh_key.valheim_key.id]
   
   # Skrypt inicjalizacyjny
   user_data = base64encode(templatefile("${path.module}/../scripts/cloud-init.yml", {
@@ -33,35 +33,23 @@ resource "ovh_cloud_project_instance" "valheim_server" {
     valheim_world_name  = var.valheim_world_name
     valheim_password    = var.valheim_password
   }))
-
-  tags = [
-    "valheim",
-    "gameserver",
-    "automated"
-  ]
 }
 
 # Klucz SSH
-resource "ovh_cloud_project_sshkey" "valheim_key" {
-  service_name = var.ovh_service_name
-  name         = "valheim-server-key"
-  public_key   = file(var.ssh_public_key_path)
+resource "ovh_me_ssh_key" "valheim_key" {
+  key_name = "valheim-server-key"
+  key      = file(var.ssh_public_key_path)
 }
 
-# Otwieranie portów w firewall
-resource "ovh_cloud_project_instance_interface" "valheim_interface" {
-  service_name = var.ovh_service_name
-  instance_id  = ovh_cloud_project_instance.valheim_server.id
-  type         = "public"
-}
+# Note: Valheim ports (2456-2458 UDP) should be opened via OVH control panel or cloud-init script
 
 # Output z adresem IP
 output "server_ip" {
-  value = ovh_cloud_project_instance.valheim_server.ip_address
+  value = ovh_cloud_project_compute_instance.valheim_server.access_ipv4
   description = "Publiczny adres IP serwera Valheim"
 }
 
 output "ssh_command" {
-  value = "ssh -i ${var.ssh_private_key_path} ubuntu@${ovh_cloud_project_instance.valheim_server.ip_address}"
+  value = "ssh -i ${var.ssh_private_key_path} ubuntu@${ovh_cloud_project_compute_instance.valheim_server.access_ipv4}"
   description = "Komenda SSH do połączenia z serwerem"
 }

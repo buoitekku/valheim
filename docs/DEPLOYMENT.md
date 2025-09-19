@@ -32,6 +32,33 @@
 
 ## Wdrażanie
 
+### 1. Uruchomienie instancji VM
+1. Zaloguj się do [panelu OVHCloud](https://www.ovh.com/manager/)
+2. Przejdź do sekcji "Public Cloud" → Twój projekt
+3. Kliknij "Instances" w menu bocznym
+4. Kliknij "Create an instance"
+5. Wybierz:
+   - **Region**: Najbliższy Twojej lokalizacji
+   - **Image**: Ubuntu 22.04 LTS
+   - **Flavor**: s1-4 (1 vCPU, 4GB RAM) - zalecane dla Valheim
+**Generowanie klucza SSH (jeśli nie masz):**
+     ```bash
+     # Wygeneruj nowy klucz SSH
+     ssh-keygen -t rsa -b 4096 -C "twoj-email@example.com"
+     
+     # Wyświetl klucz publiczny do skopiowania
+     cat ~/.ssh/id_rsa.pub
+6. Kliknij "Create instance"
+
+### 2. Dostęp do konsoli VM
+**Opcja A - Panel OVHCloud:**
+1. W sekcji "Instances" kliknij na swoją instancję
+2. Kliknij przycisk "VNC Console" aby otworzyć konsolę w przeglądarce
+
+**Opcja B - SSH (zalecane):**
+```bash
+# Połącz się przez SSH (IP znajdziesz w panelu)
+ssh ubuntu@<IP_INSTANCJI>
 ### 1. Konfiguracja
 ```bash
 # Sklonuj lub pobierz projekt
@@ -62,6 +89,10 @@ cd terraform
 
 # Sprawdź plan wdrożenia
 terraform plan
+
+# Inicjalizuj Terraform
+terraform init
+
 
 # Wdróż infrastrukturę
 terraform apply
