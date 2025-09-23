@@ -1,10 +1,10 @@
-resource "openstack_networking_secgroup_v2" "valheim_sg" {
+resource "openstack_networking_secgroup_v2" "valheim_server_sg" {
   name        = "valheim-sg"
   description = "Security group dla serwera Valheim"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "valheim_udp" {
-  security_group_id = openstack_networking_secgroup_v2.valheim_sg.id
+resource "openstack_networking_secgroup_rule_v2" "valheim_udp_rule" {
+  security_group_id = openstack_networking_secgroup_v2.valheim_server_sg.id
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "udp"
@@ -13,8 +13,8 @@ resource "openstack_networking_secgroup_rule_v2" "valheim_udp" {
   remote_ip_prefix  = "0.0.0.0/0"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "ssh" {
-  security_group_id = openstack_networking_secgroup_v2.valheim_sg.id
+resource "openstack_networking_secgroup_rule_v2" "ssh_rule" {
+  security_group_id = openstack_networking_secgroup_v2.valheim_server_sg.id
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"

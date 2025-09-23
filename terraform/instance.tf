@@ -14,7 +14,7 @@ resource "openstack_compute_instance_v2" "valheim_server" {
   }
 
   key_pair       = openstack_compute_keypair_v2.valheim_key.name
-  security_groups = [openstack_networking_secgroup_v2.valheim_sg.name]
+  security_groups = [openstack_networking_secgroup_v2.valheim_server_sg.name]
 
   user_data = templatefile("${path.module}/../scripts/cloud-init.yml", {
     valheim_server_name = var.valheim_server_name
