@@ -12,6 +12,9 @@ terraform.tfplan
 *.key
 id_rsa*
 
+# OVH/OVH API credentials
+ovh_*
+
 # Logs
 *.log
 
