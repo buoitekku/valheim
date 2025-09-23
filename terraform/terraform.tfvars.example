@@ -1,0 +1,24 @@
+# OpenStack
+os_auth_url            = "https://auth.cloud.ovh.net/v3"
+os_username            = "your_user"
+os_password            = "your_password"
+os_user_domain_name    = "Default"
+os_project_name        = "project-xxxxxx"
+os_project_domain_name = "Default"
+
+# Serwer OVH
+instance_region        = "GRA11"
+instance_flavor        = "D2-4"
+instance_image         = "Ubuntu 22.04 LTS"
+network_name           = "MyNetwork"
+external_network_name  = "Ext-Net"
+
+# SSH
+ssh_public_key_path    = "/home/ubuntu/.ssh/id_rsa.pub"
+ssh_private_key_path   = "/home/ubuntu/.ssh/id_rsa"
+ssh_allowed_cidr       = "0.0.0.0/0"
+
+# Valheim
+valheim_server_name    = "Wojtek-Valheim"
+valheim_world_name     = "PolskaPrzygoda"
+valheim_password       = "changeme"
