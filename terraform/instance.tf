@@ -33,6 +33,7 @@ resource "openstack_networking_floatingip_v2" "fip" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_assoc" {
-  instance_id    = openstack_compute_instance_v2.valheim_server.id
-  floating_ip_id = openstack_networking_floatingip_v2.fip.id
+  instance_id = openstack_compute_instance_v2.valheim_server.id
+  # Provider expects the floating IP address string here
+  floating_ip = openstack_networking_floatingip_v2.fip.address
 }
